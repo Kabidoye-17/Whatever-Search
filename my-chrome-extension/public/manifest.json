@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Your Search",
+  "version": "1.0.0",
+  "description": "Default your search to whatever you like",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["https://www.google.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.google.com/search*"],
+      "js": ["content/searchPageModifier.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["filters.json"],
+      "matches": ["https://www.google.com/*"]
+    }
+  ]
+}
