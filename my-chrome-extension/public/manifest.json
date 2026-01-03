@@ -1,10 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Your Search",
+  "name": "Find Me",
   "version": "1.0.0",
-  "description": "Default your search to whatever you like",
+  "description": "Default your search to find you",
+  "icons": {
+    "128": "/FindMe_logo.png"
+  },
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_icon": "/FindMe_logo.png"
   },
   "permissions": ["storage"],
   "host_permissions": ["https://www.google.com/*"],
@@ -13,12 +17,6 @@
       "matches": ["https://www.google.com/search*"],
       "js": ["content/searchPageModifier.js"],
       "run_at": "document_start"
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": ["filters.json"],
-      "matches": ["https://www.google.com/*"]
     }
   ]
 }

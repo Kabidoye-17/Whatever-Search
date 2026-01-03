@@ -1,16 +1,18 @@
-import type { FilterConfig, StorageState } from '../types/filters';
+import type { StoredFilter, FilterStorage, Filter } from '../types/filters';
 import { applyFilters } from '../utils/urlModifier';
 
 const PROCESSED_KEY = 'searchFilterProcessed';
+const STORAGE_KEY = 'filterStorage';
 
-async function loadFilters(): Promise<FilterConfig> {
-  const response = await fetch(chrome.runtime.getURL('filters.json'));
-  return response.json();
-}
-
-async function getFilterStates(): Promise<StorageState> {
-  const result = await chrome.storage.sync.get(['filterStates']);
-  return (result.filterStates as StorageState) || ({} as StorageState);
+async function getAllFilters(): Promise<StoredFilter[]> {
+  try {
+    const result = await chrome.storage.sync.get([STORAGE_KEY]);
+    const storage = result[STORAGE_KEY] as FilterStorage;
+    return storage?.filters || [];
+  } catch (error) {
+    console.error('Failed to load filters:', error);
+    return [];
+  }
 }
 
 async function modifySearchUrl(): Promise<void> {
@@ -23,13 +25,22 @@ async function modifySearchUrl(): Promise<void> {
   }
 
   try {
-    // Load filters and enabled states
-    const filterConfig = await loadFilters();
-    const enabledStates = await getFilterStates();
+    // Load all filters (already includes enabled state)
+    const allFilters = await getAllFilters();
+
+    // Filter to only enabled filters
+    const enabledFilters = allFilters.filter(f => f.enabled);
+
+    // Build legacy-compatible enabledStates object for applyFilters
+    const enabledStates: Record<string, boolean> = {};
+    enabledFilters.forEach(f => {
+      enabledStates[f.id] = true;
+    });
 
     // Apply filters to current URL
+    // Cast to Filter[] since StoredFilter is compatible with Filter union type
     const url = new URL(window.location.href);
-    const modifiedUrl = applyFilters(url, filterConfig.filters, enabledStates);
+    const modifiedUrl = applyFilters(url, enabledFilters as Filter[], enabledStates);
 
     // Only navigate if URL actually changed
     if (modifiedUrl.href !== url.href) {
@@ -52,8 +63,8 @@ if (window.location.pathname === '/search') {
 
 // Listen for storage changes and reapply filters
 chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName === 'sync' && changes.filterStates) {
-    // Clear the processed flag when filter states change
+  if (areaName === 'sync' && changes[STORAGE_KEY]) {
+    // Clear the processed flag when filter storage changes
     sessionStorage.removeItem(PROCESSED_KEY);
     // Reapply filters with new settings
     if (window.location.pathname === '/search') {
