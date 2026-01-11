@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { X } from '@phosphor-icons/react/dist/ssr';
 import type { CreateFilterInput, StoredFilter, FilterType } from '../types/filters';
 import { validateFilterInput } from '../utils/validation';
 
@@ -71,12 +70,6 @@ export function AddFilterModal({ isOpen, onClose, onSave, existingFilters }: Add
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown}>
-        <div className="modal-header">
-          <h2>Add New Filter</h2>
-          <button className="modal-close-btn" onClick={onClose} aria-label="Close">
-            <X size={16} weight="bold" />
-          </button>
-        </div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
