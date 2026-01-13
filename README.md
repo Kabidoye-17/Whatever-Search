@@ -5,8 +5,11 @@ This is the source code of a google chrome extension that I built inspired by Mu
 ## What Can you do with it
 On the theme of inclusivity, I didn't want to personalise to my experience alone. I want it it to be able to be used by everyone. So, you are able to create your own query and param filters and have a personalised library that you and shrink and grow. It's as simple as toggle a filter on or off. Especially handy when you are doing an hour long session trying to find the perfect halloween costume.
 ## How to use it
+Install the Chrome extension here [Extension](https://chromewebstore.google.com/detail/find-me/ikdbbcbkdjllilldkmckjffekoebbhhf)
+
 Watch this youtube video to see it in use!
 [video](https://youtu.be/tbCgNisVb7o?si=QyEB5BLN2lhohcZA)
 
 ![Promo Pic](my-chrome-extension/public/promotile.png)
+
 
